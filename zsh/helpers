@@ -123,7 +123,7 @@ knife () {
 }
 
 myip() {
-    ip addr show eth0 | grep -oP 'inet 10.\d+.\d+.\d+' | cut -c 6-
+    ip addr show eth0 | grep -oP 'inet 1\d+.\d+.\d+.\d+' | cut -c 6-
 }
 
 lastoffset(){
