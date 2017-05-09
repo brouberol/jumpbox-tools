@@ -126,6 +126,10 @@ myip() {
     ip addr show eth0 | grep -oP 'inet 1\d+.\d+.\d+.\d+' | cut -c 6-
 }
 
+ff() {
+    find . -iname "*$1*"
+}
+
 lastoffset(){
     topic=$1
     partition=$2
