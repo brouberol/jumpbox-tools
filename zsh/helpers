@@ -32,8 +32,9 @@ refreshtools(){
     exec zsh
 }
 
-deploytools(){
-    rsync -azq --exclude '.jumpbox-tools/.git' --exclude '.oh-my-zsh/.git' --exclude '.oh-my-zsh/themes' ~/.bin ~/.config ~/.gitconfig ~/.jumpbox-tools ~/.oh-my-zsh ~/.tmux.conf ~/.zshenv ~/.zshrc $USER@$1:
+instance_to_ip() {
+    local instance="$1"
+    consul-cli catalog service datadog | jq -r ".[] | select ( .Node == \"$instance\" ) | .Address "
 }
 
 jr(){
