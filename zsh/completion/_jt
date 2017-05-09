@@ -1,0 +1,35 @@
+#compdef jt
+
+_tags_caching_policy() {
+        local -a oldp
+        # cache 1h
+        oldp=( "$1"(Nmh+1) )
+        (( $#oldp ))
+}
+
+_jt() {
+        local cache_policy
+        zstyle -s ":completion:${curcontext}:" cache-policy cache_policy
+        if [[ -z "$cache_policy" ]]; then
+                zstyle ":completion:${curcontext}:" cache-policy _tags_caching_policy
+        fi
+
+        typeset -g -a _nodetaglist
+        if ( (( #_nodetaglist == 0 )) || _cache_invalid tags) \
+                && ! _retrieve_cache tags; then
+                _nodetaglist=()
+                echo
+                echo "Building the tag completion index (cache outdated), this should take a while since we query chef"
+                
+                for entry in $(knife search node -a roles -a tags -F json | jq -r '.rows[] | (keys | join("")) as $instance | (.[].tags | join(",")) as $tags | ( .[].roles | ( map(select(. != "common-node" and . != "consul-client" and (contains("canary") | not) and (contains("pgbouncer") | not) and (contains("jvm") | not)  and . != "monitoring-client" and . != "encrypted-storage" and . != "dd-process-agent" and . != "dog-base" and . != "go-perf" and (contains("from_date") | not) ) ) ) | map(. + "_" + $instance + ":" + $tags) | .[]')
+                do
+                    _nodetaglist+=( "$entry" )
+                done
+                echo "DONE. BACK TO WORK!"
+                echo
+                _store_cache tags _nodetaglist
+        fi
+
+        _describe 'values' _nodetaglist
+}
+

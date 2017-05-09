@@ -49,6 +49,11 @@ ji(){
     ssh -A $ip
 }
 
+jt(){
+    local instance=$(echo $1 | awk -F"_" '{print $2}')
+    ji $instance
+}
+
 chosts_by_role() {
     consul-cli catalog service datadog --tag="$1" | jq -r ".[].Node" | sort | uniq
 }
