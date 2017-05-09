@@ -1,0 +1,8 @@
+#!/bin/bash 
+set -e
+DEPLOY="$HOME/.jumpbox-tools/deploys"
+touch "$DEPLOY"
+if [[ $(grep -c "$1" "$DEPLOY") == 0 ]] ; then
+    rsync -azq --exclude '.jumpbox-tools/.git' --exclude '.oh-my-zsh/.git' --exclude '.oh-my-zsh/themes' ~/.config ~/tmux.multi ~/.jumpbox-tools ~/.oh-my-zsh ~/.tmux.conf ~/.zshenv ~/.zshrc "$DEPLOY" $1:~/
+    echo "$1" >> "$DEPLOY"
+fi

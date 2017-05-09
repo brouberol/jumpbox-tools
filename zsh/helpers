@@ -1,3 +1,5 @@
+#!/bin/zsh 
+
 environmentlc(){
     cat /opt/datadog/etc/environment | cut -c 5-
 }
@@ -38,8 +40,8 @@ instance_to_ip() {
 }
 
 jr(){
-    local ip=$(/usr/local/bin/consulkv services:catalog | grep "$1" | jq -r .Address | head -1)
-    deploytools $ip
+    local ip=$(consul-cli catalog service datadog --tag="$1" | jq -r ".[].Address" | head -1)
+    ~/.jumpbox-tools/deploy_tools $ip
     ssh -A $ip
 }
 
