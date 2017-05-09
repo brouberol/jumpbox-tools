@@ -48,7 +48,11 @@ ji(){
 }
 
 chosts_by_role() {
-    /usr/local/bin/consulkv services:catalog | grep "$1" | jq -r .Node | sort | uniq
+    consul-cli catalog service datadog --tag="$1" | jq -r ".[].Node" | sort | uniq
+}
+
+cip_by_role() {
+    consul-cli catalog service datadog --tag="$1" | jq -r ".[].Address" | sort | uniq
 }
 
 pg() {
