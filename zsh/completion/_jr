@@ -1,4 +1,29 @@
 #compdef jr
-# from @jmoiron bash completion script
 
+_instances_caching_policy() {
+        local -a oldp
+        # cache 1h
+        oldp=( "$1"(Nmh+1) )
+        (( $#oldp ))
+}
 
+_jr() {
+        local cache_policy
+        zstyle -s ":completion:${curcontext}:" cache-policy cache_policy
+        if [[ -z "$cache_policy" ]]; then
+                zstyle ":completion:${curcontext}:" cache-policy _instances_caching_policy
+        fi
+
+        typeset -g -a _roleslist
+        if ( (( #_roleslist == 0 )) || _cache_invalid roles) \
+                && ! _retrieve_cache roles; then
+                echo 
+                echo  "Building roles list"
+                for role in $(consul-cli catalog service datadog | jq -r -c ".[].ServiceTags | map( select(. != \"dd-process-agent\" and (contains(\"canary\") | not) and . != \"go-perf\" and . != \"base\" and (contains(\"az-\") | not) ) )[] " | sort | uniq | paste -s -d ' ' -)
+                do 
+                    _roleslist+=( "$role" )
+                done
+                _store_cache roles _roleslist
+        fi
+        _describe 'values' _roleslist
+}
