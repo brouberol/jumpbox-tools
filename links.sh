@@ -24,6 +24,7 @@ rmlink ssh/rc ~/.ssh/rc
 
 # tmux
 rmlink tmux/conf ~/.tmux.conf
+rmlink tmux.multi ~/tmux.multi
 
 # gdb!
 rmlink gdbinit ~/.gdbinit

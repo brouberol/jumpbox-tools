@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# ssh-multi : a script to ssh multiple servers over multiple tmux panes
+# nomad-fr : https://github.com/nomad-fr/scripts-systems
+# Based on D.Kovalov work : https://gist.github.com/dmytro/3984680
+
+# config
+tmux_session_name="multi-ssh"
+MAX=20
+
+usage() {
+    echo $1
+    echo
+    echo 'ssh-multi.sh : [OPTION]'
+    echo '   -d "serv0 serv1 serv2 ... servN"  : list serv to connect to'
+    echo
+    echo '   Bonus:'
+    echo '   -d "$(echo 'serv'{0..3})" : is the same as : -d "serv0 serv1 serv2 serv3"'
+    echo '   -d "$(anotherscript)" : call a script that give a list of host separated by space'
+    exit 0
+}
+
+hosts_by_role ()
+{
+    consul-cli catalog service datadog --tag="$1" | jq -r '.[] | .Node' | sort | uniq
+}
+
+starttmux() {
+    local session_name="$1"
+    local hosts=()
+    compteur=0
+    for i in ${HOSTS}
+    do
+        ((compteur++))
+        if [[ "$compteur" -gt "$MAX" ]]; then
+            break 
+        fi
+        hosts+=("$i")
+        .jumpbox-tools/deploy_tools "$i"
+    done
+    local windowname=$session_name
+    tmux -u new-session -d -s "$session_name" -n "${windowname}" "ssh ${hosts[0]}"
+    unset hosts[0];
+    for i in "${hosts[@]}"
+    do
+        tmux split-window -t :"${windowname}" -h "ssh $i"
+        tmux select-layout -t :"${windowname}" tiled > /dev/null    
+    done
+    tmux select-pane -t 0
+    tmux set-window-option -t :"${windowname}"  synchronize-panes on > /dev/null
+}
+
+checkopt() {
+    if [ -z "$HOSTS" ]; then
+        usage "Please provide of list of hosts with -d option."
+    fi
+    local host_title=$(echo $HOSTS | tr " ." "_")
+    tmux_session_name="${tmux_session_name}_${host_title}"
+    tmux_session_name="${tmux_session_name:0:32}"
+    if [ -z "$TMUX" ]; then # if not in a tmux session create one
+
+    # check that there is not an other session with same name
+    compteur=0
+    for session in $(tmux ls | awk '{print substr($1, 1, length($1)-1)}')
+    do
+        ((compteur++))
+        if [ "$session" = "$tmux_session_name" ]; then
+        tmux_session_name=$tmux_session_name"_"$compteur
+        fi
+    done
+    fi
+    starttmux "$tmux_session_name"
+    tmux a -dt "$tmux_session_name"
+}
+
+while getopts "u:d:r:m:h" o; do
+        case "${o}" in
+        h)
+        usage
+        ;;
+        m)
+                MAX=${OPTARG}
+                ;;
+        d)
+                HOSTS=${OPTARG}
+                ;;
+        r)
+               HOSTS=$(hosts_by_role ${OPTARG} | paste -sd " " -)
+               ;;
+        esac
+done
+checkopt
