@@ -1,18 +1,64 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+set nocompatible             
+filetype off                  
 
 colorscheme delek
+set exrc
+filetype plugin indent on
 
+set diffopt+=iwhite
+syntax enable
+syntax on
+set background=dark
+let mapleader = ","
+let g:mapleader = ","
+
+set incsearch
+inoremap jj <ESC>
+nmap <silent> <leader>/ :nohlsearch<CR>
+
+set wildmode=longest,list,full
+set wildmenu
+
+set hidden
+set showmatch
+set autowrite
+
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+" Show partial commands in the last line of the screen
+set showcmd
+
+" Highlight searches (use <C-L> to temporarily turn off highlighting; see the
+" mapping of <C-L> below)
+set hlsearch
+" Use case insensitive search, except when using capital letters
+set ignorecase
+set smartcase
+" Allow backspacing over autoindent, line breaks and start of insert action
+set backspace=indent,eol,start
+set nostartofline
+set laststatus=2
+set confirm
+set visualbell
+
+" And reset the terminal code for the visual bell.  If visualbell is set, and
+" this line is also included, vim will neither flash nor beep.  If visualbell
+" is unset, this does nothing.
+set t_vb=
+set cmdheight=2
+
+" Quickly time out on keycodes, but never time out on mappings
+set notimeout ttimeout ttimeoutlen=200
+
+" Use <F11> to toggle between 'paste' and 'nopaste'
+set pastetoggle=<F11>
+
+" Indentation settings for using 2 spaces instead of tabs.
+" Do not change 'tabstop' from its default value of 8 with this setup.
+set smartindent
 set tabstop=4
 set shiftwidth=4
-set softtabstop=4
-set smarttab
 set expandtab
-set pastetoggle=<f2>
-
-map gn :bn<cr>
-map gp :bp<cr>
-map gd :bd<cr>
-
-autocmd Filetype python setlocal ts=4 sw=4 expandtab
-autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
