@@ -6,8 +6,21 @@ environmentuc(){
     cat /opt/datadog/etc/environment | cut -c 5- | tr '[a-z]' '[A-Z]'
 }
 
+vpc_tag(){
+    ip=$(myip)
+    if [[ "$ip" == 172.* ]]; then
+        echo "VPC"
+    else
+        echo "Classic"
+    fi
+}
+
+maintags(){
+    cat /etc/update-motd.d/95-roles | sed -e '1,/Tags/d' | head -n-1 | sort -t\: -k2 -n | awk -F: '{ if (el[$1] == "") { el[$1]=$2; } else el[$1]=el[$1]","$2 } END {for (i in el) {printf( i":"el[i]"\n" ) } } ' | paste -d',' -s -
+}
+
 mainroles(){
-    cat /etc/update-motd.d/95-roles | tail -n+5 | grep -vE '^Instance Type:|^\*\*|^$' | grep -Ev 'common-node|monitoring-client|dog-base|encrypted-storage' | paste -d',' -s -
+    cat /etc/update-motd.d/95-roles | awk '/Roles/{a=1;next}/Tags/{a=0}a' | grep -Ev "^$|encrypted-storage" | paste -d',' -s - 
 }
 
 refreshtools(){
