@@ -22,7 +22,7 @@ maintags(){
 }
 
 mainroles(){
-    cat /etc/update-motd.d/95-roles | awk '/Roles/{a=1;next}/Tags/{a=0}a' | grep -Ev "^$|encrypted-storage" | paste -d',' -s - 
+    cat /etc/update-motd.d/95-roles | awk '/Roles/{a=1;next}/Tags/{a=0}a' | grep -Ev "^$|encrypted-storage|agent-prod-to-staging|canary-security-logging|go-perf" | paste -d',' -s - 
 }
 
 refreshtools(){
@@ -70,11 +70,11 @@ jt(){
 }
 
 tags_from_ip() {
-    consul-cli catalog service datadog | jq -r -c ".[] | select ( .Address | contains(\"$1\") ) | .ServiceTags | map(select(. != \"dd-process-agent\" and . != \"go-perf\" and (contains(\"az-\") | not) ) ) | join(\",\") "
+    consul-cli catalog service datadog | jq -r -c ".[] | select ( .Address | contains(\"$1\") ) | .ServiceTags | map(select(. != \"dd-process-agent\" and . != \"agent-prod-to-staging\" and . != \"canary-security-logging\" and . != \"go-perf\" and (contains(\"az-\") | not) ) ) | join(\",\") "
 }
 
 tags_from_host() {
-    consul-cli catalog service datadog | jq -r -c ".[] | select ( .Node | contains(\"$1\") ) | .ServiceTags | map(select(. != \"dd-process-agent\" and . != \"go-perf\" and (contains(\"az-\") | not) ) ) | join(\",\") "
+    consul-cli catalog service datadog | jq -r -c ".[] | select ( .Node | contains(\"$1\") ) | .ServiceTags | map(select(. != \"dd-process-agent\" and . != \"agent-prod-to-staging\" and . != \"canary-security-logging\" . != \"go-perf\" and (contains(\"az-\") | not) ) ) | join(\",\") "
 }
 
 chosts_by_role() {
