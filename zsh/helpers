@@ -57,9 +57,13 @@ do_ssh () {
 
 jr(){
     local ip=$(consul-cli catalog service datadog --tag="$1" | jq -r ".[].Address" | head -1)
-    ~/.jumpbox-tools/deploy_tools $ip
-    update_tmux_window_format $ip
-    do_ssh $ip
+    if [[ -z "$ip" ]]; then 
+        echo "Unkown role"
+    else
+        ~/.jumpbox-tools/deploy_tools $ip
+        update_tmux_window_format $ip
+        do_ssh $ip
+    fi
 }
 
 ji(){
