@@ -56,10 +56,6 @@ do_ssh () {
 }
 
 jr(){
-    if [[ "$1" != 1* ]]; then 
-        ji $1
-        return 
-    fi
     local ip=$(consul-cli catalog service datadog --tag="$1" | jq -r ".[].Address" | head -1)
     if [[ -z "$ip" ]]; then 
         echo "Unkown role"
