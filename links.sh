@@ -13,9 +13,6 @@ rmlink zsh/login ~/.zlogin
 mkdir -p ~/.oh-my-zsh/custom/themes
 rmlink zsh/theme ~/.oh-my-zsh/custom/themes/jumpbox.zsh-theme
 
-# tools
-rmlink bin ~/.bin
-
 # git
 rmlink git/gitconfig ~/.gitconfig
 
