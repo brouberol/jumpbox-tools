@@ -1,3 +1,20 @@
 # fix ssh agent when tmux is detached
 setenv -g SSH_AUTH_SOCK $HOME/.ssh/ssh_auth_sock
 set-window-option -g mode-keys vi
+
+set -g base-index 1
+
+set-window-option -g mode-keys vi
+set-window-option -g clock-mode-colour colour40 #green
+
+
+set-option -g set-titles on
+set-option -g set-titles-string "#h / #W"
+
+set -g @shell_mode 'vi'
+
+bind C-l select-window -l
+bind l select-window -l
+
+setw -g window-status-format "#[fg=magenta]#[bg=black] #I #[bg=cyan]#[fg=colour8] #W"
+setw -g window-status-current-format "#[bg=brightmagenta]#[fg=colour8] #I #[fg=colour8]#[bg=colour14] #W"
