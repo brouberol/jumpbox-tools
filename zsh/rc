@@ -26,3 +26,6 @@ bindkey '^r' history-incremental-search-backward
 bindkey '^s' history-incremental-search-forward
 
 export LESS=" -S "
+
+ip="$(myip)"
+update_tmux_window_format $(myip)

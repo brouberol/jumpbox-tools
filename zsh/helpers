@@ -39,20 +39,20 @@ instance_to_ip() {
     consul-cli catalog service datadog | jq -r ".[] | select ( .Node == \"$instance\" ) | .Address "
 }
 
-update_tmux_and_ssh() {
+update_tmux_window_format() {
     local ip="$1"
     local role="$(tags_from_ip $ip)"
     if [ -n "$TMUX" ]; then
-        tmux -q setw window-status-format "#[fg=magenta]#[bg=black] #I #[bg=cyan]#[fg=colour8] ${role}:#W"
-        tmux -q setw window-status-current-format "#[bg=brightmagenta]#[fg=colour8] #I #[fg=colour8]#[bg=colour14] ${role}:#W"
+        tmux -q setw window-status-format "#[fg=magenta]#[bg=black] #I #[bg=cyan]#[fg=colour8] ${role}:#W" > /dev/null
+        tmux -q setw window-status-current-format "#[bg=brightmagenta]#[fg=colour8] #I #[fg=colour8]#[bg=colour14] ${role}:#W" > /dev/null
     fi
-    ssh -A $ip
 }
 
 jr(){
     local ip=$(consul-cli catalog service datadog --tag="$1" | jq -r ".[].Address" | head -1)
     ~/.jumpbox-tools/deploy_tools $ip
-    update_tmux_and_ssh $ip
+    update_tmux_window_format $ip
+    ssh -A $ip
 }
 
 ji(){
@@ -61,7 +61,8 @@ ji(){
         ip=$(instance_to_ip $1)
     fi
     ~/.jumpbox-tools/deploy_tools $ip
-    update_tmux_and_ssh $ip
+    update_tmux_window_format $ip
+    ssh -A $ip
 }
 
 jt(){
