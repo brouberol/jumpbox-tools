@@ -48,11 +48,18 @@ update_tmux_window_format() {
     fi
 }
 
+do_ssh () {
+    local ip="$1"
+    update_tmux_window_format "$ip"
+    ssh -A $ip
+    update_tmux_window_format $(myip)
+}
+
 jr(){
     local ip=$(consul-cli catalog service datadog --tag="$1" | jq -r ".[].Address" | head -1)
     ~/.jumpbox-tools/deploy_tools $ip
     update_tmux_window_format $ip
-    ssh -A $ip
+    do_ssh $ip
 }
 
 ji(){
@@ -62,7 +69,7 @@ ji(){
     fi
     ~/.jumpbox-tools/deploy_tools $ip
     update_tmux_window_format $ip
-    ssh -A $ip
+    do_ssh $ip
 }
 
 jt(){
