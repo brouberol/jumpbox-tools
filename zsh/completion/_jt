@@ -20,8 +20,9 @@ _jt() {
                 _nodetaglist=()
                 echo
                 echo "Building the tag completion index (cache outdated), this should take a while since we query chef"
+                echo
                 
-                for entry in $(knife search node -a roles -a tags -F json | jq -r '.rows[] | (keys | join("")) as $instance | (.[].tags | join(",")) as $tags | ( .[].roles | ( map(select(. != "common-node" and . != "consul-client" and (contains("canary") | not) and (contains("pgbouncer") | not) and (contains("jvm") | not)  and . != "monitoring-client" and . != "encrypted-storage" and . != "dd-process-agent" and . != "dog-base" and . != "go-perf" and (contains("from_date") | not) ) ) ) | map(. + "_" + $instance + ":" + $tags) | .[]')
+                for entry in $(knife search node -a roles -a tags -F json | jq -r '.rows[] | (keys | join("")) as $instance | (.[].tags | join(",")) as $tags | ( .[].roles | ( map(select(. != "common-node" and . != "consul-client" and (contains("canary") | not) and (contains("pgbouncer") | not) and (contains("jvm") | not)  and . != "monitoring-client" and . != "encrypted-storage" and . != "dd-process-agent" and . != "dog-base" and . != "go-perf" and (contains("from_date") | not) ) ) ) ) | map(. + "_" + $instance + ":" + $tags) | .[]')
                 do
                     _nodetaglist+=( "$entry" )
                 done
@@ -32,4 +33,3 @@ _jt() {
 
         _describe 'values' _nodetaglist
 }
-
