@@ -6,7 +6,7 @@ DISABLE_AUTO_UPDATE="true"
 COMPLETION_WAITING_DOTS="true"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-plugins=(capistrano git tmux vi)
+plugins=(capistrano git)
 
 fpath=(~/.jumpbox-tools/zsh/completion $fpath)
 
@@ -14,16 +14,15 @@ source ~/.jumpbox-tools/zsh/aliases
 source ~/.jumpbox-tools/zsh/helpers
 source $ZSH/oh-my-zsh.sh
 
-bindkey -v
+export DATADOG_ROOT=$HOME/dd
+export WORKON_HOME=$DATADOG_ROOT/.envs
+export GOPATH=$DATADOG_ROOT/go
+export GOBIN=$GOPATH/bin
+export EDITOR=vim
 
-
-bindkey '^P' up-history
-bindkey '^N' down-history
-bindkey '^?' backward-delete-char
-bindkey '^h' backward-delete-char
-bindkey '^w' backward-kill-word
-bindkey '^r' history-incremental-search-backward
-bindkey '^s' history-incremental-search-forward
+bindkey -e
+bindkey '[C' forward-word
+bindkey '[D' backward-word
 
 export LESS=" -S "
 
