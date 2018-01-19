@@ -94,7 +94,9 @@ tags_from_host() {
 }
 
 chosts_by_role() {
-    consul-cli catalog service datadog --tag="$1" | jq -r ".[].Node" | sort | uniq
+    if [ "$1" == "" ]; then
+        consul-cli catalog service datadog --tag="$1" | jq -r ".[].Node" | sort | uniq
+    fi
 }
 
 cip_by_role() {
@@ -190,3 +192,5 @@ resource(){
 ksearch() {
     knife search node $1 -a ec2.placement_availability_zone -a ec2.instance_type -a tags -a roles -a uptime_in_seconds
 }
+
+alias hosts_by_role=chosts_by_role
