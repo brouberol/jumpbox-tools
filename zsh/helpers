@@ -94,7 +94,7 @@ tags_from_host() {
 }
 
 chosts_by_role() {
-    if [ "$1" == "" ]; then
+    if [ "$1" != "" ]; then
         consul-cli catalog service datadog --tag="$1" | jq -r ".[].Node" | sort | uniq
     fi
 }
