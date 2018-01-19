@@ -13,7 +13,6 @@ else
 fi
 
 USER_PROMPT="%{$fg[cyan]%}[$USERCOLORED%{$fg[yellow]%}@%{$fg[white]%}$(instanceid)%{$fg[cyan]%}]%{$reset_color%}"
-VPC_PROMPT="%{$fg[cyan]%}[$(vpc_tag)]%{$reset_color%}"
 
 if [ "$(environmentuc)" != "PROD" ]; then
     ENV_PROMPT="%{$fg[cyan]%}[%{$bg[white]%}%{$fg_bold[black]%}$(environmentuc)%k%b%{$fg[cyan]%}]%{$reset_color%}"
@@ -28,7 +27,7 @@ CWD_PROMPT="%~"
 
 SNDLINEPREFIX="%{$fg[cyan]%}└─$%{$reset_color%}"
 
-PROMPT=$'$FSTLINEPREFIX$USER_PROMPT$VPC_PROMPT$ENV_PROMPT$ROLE_PROMPT$TIME_PROMPT $CWD_PROMPT
+PROMPT=$'$FSTLINEPREFIX$USER_PROMPT$ENV_PROMPT$ROLE_PROMPT$TIME_PROMPT $CWD_PROMPT
 $SNDLINEPREFIX  '
 
 ZSH_THEME_GIT_PROMPT_PREFIX="git:(%{$fg[red]%}"
