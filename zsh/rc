@@ -28,3 +28,11 @@ export LESS=" -S "
 
 ip="$(myip)"
 update_tmux_window_format $(myip)
+
+if [ -e /etc/profile.d/topicmappr.sh ]; then
+  source /etc/profile.d/topicmappr.sh
+fi
+
+if [ -e /etc/profile.d/metricsfetcher.sh ]; then
+  source /etc/profile.d/metricsfetcher.sh
+fi
